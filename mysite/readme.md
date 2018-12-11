@@ -18,6 +18,3 @@ To verify it's working, run the following command:
 cd mysite/
 python3 manage.py runserver
 ```
-
-- xx.py can train the models in any computer.
-- xx.py will parallelize the training process with multiple cores. So it requires your computer must have multiple cores.
