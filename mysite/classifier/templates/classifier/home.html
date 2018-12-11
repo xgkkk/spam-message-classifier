@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>垃圾短信分类器</title>
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">-->
+    <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>-->
+    <link rel="stylesheet" type="text/css" href="{% static 'classifier/bootstrap.min.css' %}">
+    <script src="{% static 'classifier/bootstrap.min.js' %}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'classifier/style.css' %}">
+    <!--<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.common.min.js"></script>-->
+    <script src="{% static 'classifier/echarts.min.js' %}"></script>
+    <!--<script src="{% static 'classifier/plot.js' %}"></script>-->
+
+</head>
+<body>
+
+<!--<h3>垃圾短信分类器在线测试</h3>-->
+<div class="container-fluid input-table" style="padding-top:25px; padding-bottom:20px;">
+    <h3>垃圾短信分类器在线测试</h3>
+    <form role="form" class="form-horizontal" method="post">
+        {% csrf_token %}
+        <div class="form-group" style="margin-top:22px">
+            <!--<label for="id_email_content">短信内容</label>-->
+            <textarea class="form-control" name="email_content" placeholder="请输入短信内容" required id="id_email_content" rows="6">{{email_content}}</textarea>
+        </div>
+
+        <div class="mybutton" style="margin-top:18px">
+            <button type="submit" class="btn btn-primary btn-block">提交判断</button>
+        </div>
+
+            <div class="error-password">
+                {% if forgetpwd_error %}
+                    <p>{{ forgetpwd_error }}</p>
+                {% endif %}
+            </div>
+
+        {% if click_if %}
+        <div align="left" style="margin-top:20px"><h5>结果分析：</h5></div>
+        <div id="main" style="margin-top:0px;height:180px;border-width:10px;dashed:red"></div>
+        <div align="center" style="padding-bottom:6px; font-size:17px">结论：这<span style="font-weight:bold;color:red">{{spam_if}}</span>一封垃圾短信</div>
+        {% endif %}
+    </form>
+
+    <div>
+
+    </div>
+
+ </div>
+
+<script type="text/javascript">
+     var myChart = echarts.init(document.getElementById('main'));
+
+    //初始化数据
+    var barData = [{{notspam_p}}, {{spam_p}}];
+
+    var option = {
+        title: {
+            text: '是否是垃圾短信的概率分布',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            type: 'value',
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            nameTextStyle: {
+                fontSize: 30
+            }
+        },
+        yAxis: {
+            type: 'category',
+            data: ["否", "是"],
+            splitLine: {show: false},
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            offset: 10,
+        },
+        series: [
+            {
+                name: '概率',
+                type: 'bar',
+                data: barData,
+                barWidth: 20,
+                barGap: 10,
+                smooth: true,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right',
+                        <!--offset: [5, -2],-->
+                        textStyle: {
+                            color: 'red',
+                            fontSize: 16
+                        }
+                    }
+                },
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+</body>
+</html>
